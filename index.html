@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PicLink Clone - Link Studio</title>
+    
+    <!-- Open Graph Meta Tags (Placeholder) -->
+    <meta property="og:title" content="Special Offer">
+    <meta property="og:image" content="">
+    
+    <style>
+        /* CSS Design - PicLink এর মতো (অপরিবর্তিত) */
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+
+        .header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .logo {
+            background-color: #e63946;
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin-right: 10px;
+            font-size: 20px;
+        }
+
+        .brand-name {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .balance-card {
+            background-color: #fff0f3;
+            border: 1px solid #ffccd5;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            color: #e63946;
+            font-weight: 600;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            background-color: #f9f9f9;
+            box-sizing: border-box; 
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #e63946;
+            background-color: white;
+        }
+
+        .btn-finalize {
+            width: 100%;
+            background-color: #e63946;
+            color: white;
+            padding: 15px;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 10px;
+            box-shadow: 0 4px 10px rgba(230, 57, 70, 0.3);
+        }
+
+        .btn-finalize:hover {
+            background-color: #c92a37;
+        }
+
+        /* Preview Card Design */
+        .preview-section {
+            margin-top: 40px;
+            border-top: 2px dashed #ddd;
+            padding-top: 20px;
+        }
+
+        .preview-title {
+            text-align: center;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .card-preview {
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            background-color: #eee;
+            object-fit: cover;
+            display: block;
+        }
+
+        .card-text {
+            padding: 12px;
+            background: #f0f2f5;
+            border-top: 1px solid #ddd;
+        }
+
+        .card-meta {
+            font-size: 12px;
+            color: #606770;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .card-heading {
+            font-size: 16px;
+            font-weight: bold;
+            color: #1d2129;
+            margin-bottom: 3px;
+            line-height: 1.2;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: #606770;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        #generatedLinkArea {
+            display: none;
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .copy-link {
+            font-weight: bold;
+            color: #2e7d32;
+            word-break: break-all;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        /* Redirect Screen Style */
+        #redirectScreen {
+            display: none;
+            text-align: center;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: white;
+            z-index: 9999;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #e63946;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <!-- Redirect Screen (Hidden by default) -->
+    <div id="redirectScreen">
+        <div class="loader"></div>
+        <h2 id="redirectTitle">Please wait...</h2>
+        <p>Redirecting to destination...</p>
+    </div>
+
+    <!-- Main Creator Interface -->
+    <div id="creatorInterface">
+        <div class="header">
+            <div class="logo">@</div>
+            <div class="brand-name">PICLINK CLONE</div>
+        </div>
+
+        <div class="container">
+            <div class="balance-card">
+                <span>AVAILABLE BALANCE</span>
+                <span>Unlimited (GitHub)</span>
+            </div>
+
+            <h1>LINK STUDIO</h1>
+            <p style="color: #888; font-size: 14px; margin-bottom: 20px;">DESIGN YOUR METADATA</p>
+
+            <div class="form-group">
+                <label>Destination Link (যেখানে ইউজার যাবে)</label>
+                <input type="url" id="destLink" placeholder="https://..." oninput="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label>Thumbnail Link (Image URL)</label>
+                <input type="url" id="imgLink" placeholder="https://image-path.jpg" oninput="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label>Visual Title (বড় লেখা)</label>
+                <input type="text" id="titleText" placeholder="Engaging Title" oninput="updatePreview()">
+            </div>
+
+            <div class="form-group">
+                <label>Description (ছোট বর্ণনা)</label>
+                <textarea id="descText" rows="3" placeholder="Compelling description..." oninput="updatePreview()"></textarea>
+            </div>
+
+            <button class="btn-finalize" onclick="finalizeAsset()">FINALIZE ASSET (Generate Link)</button>
+            
+            <div id="generatedLinkArea">
+                <p>আপনার লিংক তৈরি হয়েছে (কপি করুন):</p>
+                <div class="copy-link" id="finalLink"></div>
+            </div>
+
+            <div class="preview-section">
+                <div class="preview-title">preview</div>
+                <div class="card-preview">
+                    <img src="https://via.placeholder.com/600x315" alt="Preview Image" class="card-img" id="prevImg">
+                    <div class="card-text">
+                        <div class="card-meta" id="prevDomain">WEBSITE.COM</div>
+                        <div class="card-heading" id="prevTitle">Preview Title</div>
+                        <div class="card-desc" id="prevDesc">Meta description preview...</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Check if the URL has data to redirect
+        window.onload = function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const encodedData = urlParams.get('data');
+
+            if (encodedData) {
+                // VIEW MODE: Hide creator, show loader, execute redirect
+                document.getElementById('creatorInterface').style.display = 'none';
+                document.getElementById('redirectScreen').style.display = 'flex';
+
+                try {
+                    // Decode the Base64 data
+                    const jsonString = atob(encodedData);
+                    const data = JSON.parse(jsonString);
+
+                    // Set page title for browser tab
+                    document.title = data.t;
+                    document.getElementById('redirectTitle').innerText = data.t;
+
+                    // Execute Redirect after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = data.d;
+                    }, 1500);
+
+                } catch (e) {
+                    document.getElementById('redirectTitle').innerText = "Invalid Link!";
+                    alert("লিংকটি ভুল অথবা নষ্ট হয়ে গেছে।");
+                }
+            }
+        };
+
+        // --- Creator Logic Below ---
+
+        function updatePreview() {
+            const dest = document.getElementById('destLink').value;
+            const img = document.getElementById('imgLink').value;
+            const title = document.getElementById('titleText').value;
+            const desc = document.getElementById('descText').value;
+
+            if(img) document.getElementById('prevImg').src = img;
+            if(title) document.getElementById('prevTitle').innerText = title;
+            if(desc) document.getElementById('prevDesc').innerText = desc;
+
+            if(dest) {
+                try {
+                    const url = new URL(dest);
+                    document.getElementById('prevDomain').innerText = url.hostname.toUpperCase();
+                } catch(e) {
+                    document.getElementById('prevDomain').innerText = "WEBSITE.COM";
+                }
+            }
+        }
+
+        function finalizeAsset() {
+            const dest = document.getElementById('destLink').value;
+            const img = document.getElementById('imgLink').value;
+            const title = document.getElementById('titleText').value;
+            const desc = document.getElementById('descText').value;
+            
+            if(!dest) {
+                alert("দয়া করে Destination Link দিন!");
+                return;
+            }
+
+            // Create a JSON object with the data
+            const linkData = {
+                d: dest,
+                i: img,
+                t: title,
+                desc: desc
+            };
+
+            // Convert to JSON string and then Base64 encode
+            // btoa() creates a Base64 string
+            const encodedString = btoa(JSON.stringify(linkData));
+
+            // Create the final URL based on current page URL
+            const currentUrl = window.location.href.split('?')[0]; 
+            const finalUrl = `${currentUrl}?data=${encodedString}`;
+            
+            // Show result
+            document.getElementById('generatedLinkArea').style.display = 'block';
+            document.getElementById('finalLink').innerText = finalUrl;
+            
+            // Optional: Copy to clipboard logic
+            navigator.clipboard.writeText(finalUrl).then(() => {
+                alert("লিংক কপি হয়েছে!");
+            });
+        }
+    </script>
+
+</body>
+</html>
